@@ -1,0 +1,24 @@
+{
+  "name": "pacman",
+  "version": "1.0.0",
+  "description": "Pacman built in Phaser and Javascript.",
+  "main": "main.js",
+  "scripts": {
+    "start": "browser-sync start --server . --files .",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zvansom/Pacman.git"
+  },
+  "author": "Zach VanSomeren",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/zvansom/Pacman/issues"
+  },
+  "homepage": "https://github.com/zvansom/Pacman#readme",
+  "dependencies": {
+    "browser-sync": "^2.24.6",
+    "lodash": "^4.17.10"
+  }
+}
