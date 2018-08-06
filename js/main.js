@@ -9,10 +9,18 @@ function init() {
 }
 
 function preload() {
-  // game.load.spritesheet('test', '../assets/spritesheet.png', 16, 16);
-  game.load.tilemap('map', './assets/pacman_tile_map.json', null, Phaser.Tilemap.TILED_JSON);
+  // Enable physics
+  game.physics.startSystem(Phaser.Physics.ARCADE);
 
-  game.load.image('walls', './assets/spritesheet.png', )
+  // Tilemap object and image for tilemap.
+  game.load.tilemap('map', './assets/pacman_tile_map.json', null, Phaser.Tilemap.TILED_JSON);
+  game.load.image('spritesheet', './assets/spritesheet.png');
+
+  // Load spritesheet
+  game.load.spritesheet('sprites', './assets/spritesheet.png', 16, 16);
+
+  // pacman
+  game.load.spritesheet
 }
 
 function create() {
@@ -20,17 +28,30 @@ function create() {
   game.stage.backgroundColor = '#000000';
 
   map = game.add.tilemap('map');
-  map.addTilesetImage('Pacman Assets', 'walls');
+  map.addTilesetImage('Pacman Assets', 'spritesheet');
 
   layer = map.createLayer('Tile Layer 1');
 
-  // layer.resizeWorld();
+  pacman = game.add.sprite(32, 16, 'sprites');
+  pacman.frame = 3;
+  game.physics.enable(pacman);
 
-  // pacman = game.add.sprite(100, 100, 'test');
-  // sprite.frame = 0;
-  // sprite.scale.x = 0.5;
-  // sprite.scale.y = 0.5;
+  cursors = game.input.keyboard.createCursorKeys();
+
 }
 
 function update() {
+  pacman.body.velocity.set(0);
+
+  if(cursors.left.isDown) {
+    pacman.body.velocity.x = -50;
+  } else if(cursors.right.isDown) {
+    pacman.body.velocity.x = 50;
+  }
+
+  if(cursors.up.isDown) {
+    pacman.body.velocity.y = -50;
+  } else if(cursors.down.isDown) {
+    pacman.body.velocity.y = 50;
+  }
 }
