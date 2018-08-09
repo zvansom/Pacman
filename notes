@@ -1,0 +1,34 @@
+// // TODO: Need to separate into separate 'Get Direction' and 'Animate' methods.
+// // TODO: Need to catch 'twitching' bug.  (I think it's a decimal rounding error.)
+//         // Only occurs when moving in y with x movement queued.
+// animatePacman: function() {
+//   var prevX = Math.floor(this.prevX);
+//   var prevY = Math.floor(this.prevY);
+//   var currX = Math.floor(this.pacman.x);
+//   var currY = Math.floor(this.pacman.y);
+//
+//   if(prevX > currX) {
+//     this.pacman.animations.play('left');
+//   } else if(prevY > currY) {
+//     this.pacman.animations.play('up');
+//   } else if(prevX < currX) {
+//     this.pacman.animations.play('right');
+//   } else if(prevY < currY){
+//     this.pacman.animations.play('down');
+//   } else {
+//     // Do nothing.
+//   }
+//   this.prevX = currX;
+//   this.prevY = currY;
+// },
+//
+//
+//
+// collectDot: function(pacman, dot) {
+//   pacman.score += 10;
+//   dot.parent.remaining--;
+//   dot.kill();
+// },
+
+
+// }
