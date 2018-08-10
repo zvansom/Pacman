@@ -2,8 +2,8 @@ function queueGhostMovement(ghost) {
   if(ghost.key === 'pacman') {
     return;
   } else {
+    if (ghost.queuedDirection === '') {
       var direction = ghost.currentDirection;
-
       switch(direction) {
         case 'RIGHT':
         case 'LEFT':
@@ -26,5 +26,16 @@ function queueGhostMovement(ghost) {
         default:
           break;
       }
+    } else if (ghost.currentDirection === 'STOPPED') {
+      if (ghost.queuedDirection === 'LEFT' && ghost.body.blocked.left === true) {
+        ghost.queuedDirection = 'RIGHT';
+      } else if (ghost.queuedDirection === 'RIGHT' && ghost.body.blocked.right === true) {
+        ghost.queuedDirection = 'LEFT';
+      } else if (ghost.queuedDirection === 'UP' && ghost.body.blocked.up === true) {
+        ghost.queuedDirection = 'DOWN';
+      } else if (ghost.queuedDirection === 'DOWN' && ghost.body.blocked.down === true) {
+        ghost.queuedDirection = 'UP';
+      }
     }
   }
+}
