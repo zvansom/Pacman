@@ -67,22 +67,26 @@ var PacmanGame = {
     initProps(blinky);
     game.physics.arcade.enable(blinky);
     blinky.body.velocity.x = SPEED;
+    blinky.frame = 56;
 
 
     pinky = game.add.sprite(232, 288, 'pinky');
     initProps(pinky);
     game.physics.arcade.enable(pinky);
     pinky.body.velocity.x = -SPEED;
+    pinky.frame = 70;
 
     inky = game.add.sprite(232, 288, 'inky');
     initProps(inky);
     game.physics.arcade.enable(inky);
     inky.body.velocity.x = -SPEED;
+    inky.frame = 84;
 
     clyde = game.add.sprite(232, 288, 'clyde');
     initProps(clyde);
     game.physics.arcade.enable(clyde);
     clyde.body.velocity.x = -SPEED;
+    clyde.frame = 98;
 
     // ----- ANIMATIONS -----
     // Add the player animations
@@ -96,21 +100,29 @@ var PacmanGame = {
     blinky.animations.add('LEFT', [58, 59], 10, true);
     blinky.animations.add('UP', [60, 61], 10, true);
     blinky.animations.add('DOWN', [62, 63], 10, true);
+    blinky.animations.add('vulnerable', [64, 65], 10, true);
+    blinky.animations.add('flashing', [64, 65, 66, 67], 10, true);
 
     pinky.animations.add('RIGHT', [70, 71], 10, true);
     pinky.animations.add('LEFT', [72, 73], 10, true);
     pinky.animations.add('UP', [74, 75], 10, true);
     pinky.animations.add('DOWN', [76, 77], 10, true);
+    pinky.animations.add('vulnerable', [64, 65], 10, true);
+    pinky.animations.add('flashing', [64, 65, 66, 67], 10, true);
 
     inky.animations.add('RIGHT', [84, 85], 10, true);
     inky.animations.add('LEFT', [86, 87], 10, true);
     inky.animations.add('UP', [88, 89], 10, true);
     inky.animations.add('DOWN', [90, 91], 10, true);
+    inky.animations.add('vulnerable', [64, 65], 10, true);
+    inky.animations.add('flashing', [64, 65, 66, 67], 10, true);
 
     clyde.animations.add('RIGHT', [98, 99], 10, true);
     clyde.animations.add('LEFT', [100, 101], 10, true);
     clyde.animations.add('UP', [102, 103], 10, true);
     clyde.animations.add('DOWN', [104, 105], 10, true);
+    clyde.animations.add('vulnerable', [64, 65], 10, true);
+    clyde.animations.add('flashing', [64, 65, 66, 67], 10, true);
 
     // Add dot animations
     dots.callAll('animations.add', 'animations', 'flashing', [149, 152], 10, true);
