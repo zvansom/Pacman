@@ -8,6 +8,7 @@ function initProps(character) {
     character.vulnerable = false;
     character.released = false;
     character.flashing = false;
+    character.released = false;
   }
 }
 
@@ -23,15 +24,20 @@ function move(character) {
   }
 }
 
+function addScore(amount) {
+  score += amount;
+  scoreText.text = 'Score: ' + score.toString();
+}
+
 function collectDot(pacman, dot) {
-  score += 10;
+  addScore(10);
   dot.parent.remaining--;
   dot.kill();
 }
 
 function collectPill(pacman, pill) {
   clearTimeout(vulnerableTimer);
-  score += 40;
+  addScore(40);
   vulnerableTimer = setTimeout(flashingVulnerable, 5000);
   blinky.vulnerable = true;
   pinky.vulnerable = true;
@@ -90,8 +96,9 @@ function handleOffscreen(character) {
 
 function handleCollision(pacman, ghost) {
   if (ghost.vulnerable === true) {
-    score += 100;
+    addScore(100);
     ghost.kill();
+    ghostsInPlay--;
     resetGhost(ghost);
   } else {
     blinky.body.velocity.x = 0;
@@ -110,9 +117,4 @@ function resetGhost(ghost) {
   ghost.revive();
   ghost.position.x = 232;
   ghost.position.y = 288;
-}
-
-function restart() {
-  clearTimeout(restartTimer);
-  game.state.restart();
 }

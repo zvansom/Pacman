@@ -61,26 +61,26 @@ var PacmanGame = {
     game.physics.arcade.enable(pacman);
 
     // Add ghosts
-    blinky = game.add.sprite(216, 232, 'blinky');
+    blinky = game.add.sprite(176, 288, 'blinky');
     initProps(blinky);
     game.physics.arcade.enable(blinky);
     blinky.body.velocity.x = SPEED;
     blinky.frame = 56;
 
 
-    pinky = game.add.sprite(232, 288, 'pinky');
+    pinky = game.add.sprite(192, 288, 'pinky');
     initProps(pinky);
     game.physics.arcade.enable(pinky);
     pinky.body.velocity.x = -SPEED;
     pinky.frame = 70;
 
-    inky = game.add.sprite(232, 288, 'inky');
+    inky = game.add.sprite(208, 288, 'inky');
     initProps(inky);
     game.physics.arcade.enable(inky);
     inky.body.velocity.x = -SPEED;
     inky.frame = 84;
 
-    clyde = game.add.sprite(232, 288, 'clyde');
+    clyde = game.add.sprite(224, 288, 'clyde');
     initProps(clyde);
     game.physics.arcade.enable(clyde);
     clyde.body.velocity.x = -SPEED;
@@ -125,6 +125,9 @@ var PacmanGame = {
     // Add dot animations
     dots.callAll('animations.add', 'animations', 'flashing', [149, 152], 10, true);
     power_pills.callAll('animations.add', 'animations', 'flashing', [150, 153], 10, true);
+
+    // Score and lives display
+    scoreText = game.add.text(20, 20, 'Score:', {font: '24px arial', fill: '#fff'});
 
     // Add keyboard listeners.
     cursors = game.input.keyboard.createCursorKeys();
@@ -185,8 +188,10 @@ var PacmanGame = {
     animate(clyde);
 
     if(dots.remaining === 0) {
-      game.pause();
+      restartTimer = setTimeout(restart, 500);
     }
+
+    checkReleaseGhost();
   }
 };
 
@@ -219,4 +224,9 @@ function handleKeyPress() {
     console.log('q', blinky.queuedDirection);
     console.log('c', blinky.currentDirection);
   }
+}
+
+function restart() {
+  clearTimeout(restartTimer);
+  game.state.restart();
 }

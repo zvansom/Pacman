@@ -60,3 +60,16 @@ function toggleVulnerable() {
   inky.flashing = false;
   clyde.flashing = false;
 }
+
+function checkReleaseGhost() {
+  if (ghostsInPlay < 4 && !releaseTimer) {
+    releaseTimer = setTimeout(releaseGhost, 5000);
+  }
+}
+
+function releaseGhost() {
+  clearTimeout(releaseTimer);
+  releaseTimer = 0;
+  ghostsInPlay++;
+  console.log('released a ghost');
+}
