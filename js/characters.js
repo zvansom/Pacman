@@ -3,6 +3,11 @@ function initProps(character) {
   character.prevY = null;
   character.queuedDirection = '';
   character.currentDirection;
+
+  if (character.key !== 'pacman') {
+    character.vulnerable = false;
+    character.released = false;
+  }
 }
 
 function move(character) {
@@ -21,6 +26,12 @@ function collectDot(pacman, dot) {
   pacman.score += 10;
   dot.parent.remaining--;
   dot.kill();
+}
+
+function collectPill(pacman, pill) {
+  console.log('pill collected');
+  pacman.score += 50;
+  pill.kill();
 }
 
 function setCurrentDirection(character) {
@@ -65,5 +76,5 @@ function handleOffscreen(character) {
 
 function handleCollision() {
   pacman.lives--;
-  
+
 }

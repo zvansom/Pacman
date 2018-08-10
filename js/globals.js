@@ -1,4 +1,4 @@
-var pacman, blinky, pinky, inky, clyde, dots;
+var pacman, blinky, pinky, inky, clyde, dots, power_pills;
 var score = 0
 var cursors, spaceKey;
 
