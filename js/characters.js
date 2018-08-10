@@ -7,6 +7,7 @@ function initProps(character) {
   if (character.key !== 'pacman') {
     character.vulnerable = false;
     character.released = false;
+    character.flashing = false;
   }
 }
 
@@ -30,7 +31,12 @@ function collectDot(pacman, dot) {
 
 function collectPill(pacman, pill) {
   console.log('pill collected');
-  pacman.score += 50;
+  pacman.score += 40;
+  vulnerableTimer = setTimeout(flashingVulnerable, 5000);
+  blinky.vulnerable = true;
+  pinky.vulnerable = true;
+  inky.vulnerable = true;
+  clyde.vulnerable = true;
   pill.kill();
 }
 
@@ -57,7 +63,11 @@ function setCurrentDirection(character) {
 }
 
 function animate(character) {
-  if (character.queuedDirection === character.currentDirection) {
+  if (character.vulnerable === true && character.flashing === true) {
+    character.animations.play('flashing');
+  } else if (character.vulnerable === true) {
+    character.animations.play('vulnerable');
+  } else if (character.queuedDirection === character.currentDirection) {
     character.animations.play(character.currentDirection);
     character.queuedDirection = '';
   }

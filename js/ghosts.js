@@ -39,3 +39,26 @@ function queueGhostMovement(ghost) {
     }
   }
 }
+
+function flashingVulnerable() {
+  console.log('flashing');
+  clearTimeout(vulnerableTimer);
+  vulnerableTimer = setTimeout(toggleVulnerable, 3000);
+  blinky.flashing = true;
+  pinky.flashing = true;
+  inky.flashing = true;
+  clyde.flashing = true;
+}
+
+function toggleVulnerable() {
+  console.log('cleared');
+  clearTimeout(vulnerableTimer);
+  blinky.vulnerable = false;
+  pinky.vulnerable = false;
+  inky.vulnerable = false;
+  clyde.vulnerable = false;
+  blinky.flashing = false;
+  pinky.flashing = false;
+  inky.flashing = false;
+  clyde.flashing = false;
+}
