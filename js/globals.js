@@ -8,6 +8,6 @@ var ghostsInPlay = 0;
 
 var vulnerableTimer, restartTimer, releaseTimer;
 
-var SPEED = 100;
+var SPEED = 200;
 //  Used in storing game assets.
 var map, sharedLayer, pacmanLayer, ghostLayer, ghostTurns;
