@@ -33,9 +33,9 @@ var PacmanGame = {
 
     // TODO: UPDATE EXLUSION LIST TO BE CHARACTER SPECIFIC
     // Add collision to all tiles with 'index' !== 0
-    map.setCollisionByExclusion('224', true, sharedLayer);
     map.setCollisionByExclusion('224', true, pacmanLayer);
     map.setCollisionByExclusion('224', true, ghostLayer);
+    map.setCollisionByExclusion('224', true, sharedLayer);
 
     // Add dot tiles to map, enable physics and body.
     dots = game.add.group();
@@ -127,7 +127,7 @@ var PacmanGame = {
     power_pills.callAll('animations.add', 'animations', 'flashing', [150, 153], 10, true);
 
     // Score and lives display
-    scoreText = game.add.text(20, 20, 'Score:', {font: '24px arial', fill: '#fff'});
+    scoreText = game.add.text(20, 20, 'Score:', {font: "60px Press Start 2P", fill: '#fff'});
 
     // Add keyboard listeners.
     cursors = game.input.keyboard.createCursorKeys();
@@ -188,7 +188,7 @@ var PacmanGame = {
     animate(clyde);
 
     if(dots.remaining === 0) {
-      restartTimer = setTimeout(restart, 500);
+      restartTimer = setTimeout(nextStage, 1000);
     }
 
     checkReleaseGhost();
@@ -228,5 +228,14 @@ function handleKeyPress() {
 
 function restart() {
   clearTimeout(restartTimer);
+  pacman.reset(216, 320);
+  blinky.reset(176, 288);
+  pinky.reset(192, 288);
+  inky.reset(208, 288);
+  clyde.reset(224, 288);
+  ghostsInPlay = 0;
+}
+
+function nextStage() {
   game.state.restart();
 }
