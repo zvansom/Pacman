@@ -41,7 +41,6 @@ function queueGhostMovement(ghost) {
 }
 
 function flashingVulnerable() {
-  console.log('flashing');
   clearTimeout(vulnerableTimer);
   vulnerableTimer = setTimeout(toggleVulnerable, 3000);
   blinky.flashing = true;
@@ -51,7 +50,6 @@ function flashingVulnerable() {
 }
 
 function toggleVulnerable() {
-  console.log('cleared');
   clearTimeout(vulnerableTimer);
   blinky.vulnerable = false;
   pinky.vulnerable = false;

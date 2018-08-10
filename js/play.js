@@ -58,12 +58,10 @@ var PacmanGame = {
     // Add the player controlled character
     pacman = game.add.sprite(216, 320, 'pacman');
     initProps(pacman);
-    pacman.score = 0;
-    pacman.lives = 3;
     game.physics.arcade.enable(pacman);
 
     // Add ghosts
-    blinky = game.add.sprite(216, 288, 'blinky');
+    blinky = game.add.sprite(216, 232, 'blinky');
     initProps(blinky);
     game.physics.arcade.enable(blinky);
     blinky.body.velocity.x = SPEED;
@@ -149,9 +147,9 @@ var PacmanGame = {
     game.physics.arcade.overlap(pacman, dots, collectDot);
     game.physics.arcade.overlap(pacman, power_pills, collectPill);
     game.physics.arcade.collide(pacman, blinky, handleCollision);
-    game.physics.arcade.collide(pacman, pinky, handleCollision);
-    game.physics.arcade.collide(pacman, inky, handleCollision);
-    game.physics.arcade.collide(pacman, clyde, handleCollision);
+    game.physics.arcade.overlap(pacman, pinky, handleCollision);
+    game.physics.arcade.overlap(pacman, inky, handleCollision);
+    game.physics.arcade.overlap(pacman, clyde, handleCollision);
 
     dots.callAll('play', null, 'flashing');
     power_pills.callAll('play', null, 'flashing');
