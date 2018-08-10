@@ -54,14 +54,19 @@ var PacmanGame = {
     game.physics.arcade.enable(pacman);
 
     // Add ghosts
+    blinky = game.add.sprite(216, 224, 'blinky');
+    initProps(blinky);
+    game.physics.arcade.enable(blinky);
 
+    blinky.frame = 56;
+    blinky.body.velocity.x = SPEED;
 
     // ----- ANIMATIONS -----
     // Add the player animations
-    pacman.animations.add('right', [0, 1, 2, 1], 10, true);
-    pacman.animations.add('left', [14, 15, 2, 15], 10, true);
-    pacman.animations.add('up', [28, 29, 2, 29], 10, true);
-    pacman.animations.add('down', [42, 43, 2, 43], 10, true);
+    pacman.animations.add('RIGHT', [0, 1, 2, 1], 10, true);
+    pacman.animations.add('LEFT', [14, 15, 2, 15], 10, true);
+    pacman.animations.add('UP', [28, 29, 2, 29], 10, true);
+    pacman.animations.add('DOWN', [42, 43, 2, 43], 10, true);
 
     // Add dot animations
     dots.callAll('animations.add', 'animations', 'flashing', [149, 152], 10, true);
@@ -77,12 +82,22 @@ var PacmanGame = {
     game.physics.arcade.collide(pacman, sharedLayer);
     game.physics.arcade.collide(pacman, pacmanLayer);
     game.physics.arcade.overlap(pacman, dots, collectDot);
+    game.physics.arcade.collide(blinky, sharedLayer);
+    game.physics.arcade.collide(blinky, ghostLayer);
 
     dots.callAll('play', null, 'flashing');
-
     handleKeyPress();
+
+    getDirection(pacman);
     move(pacman);
     animate(pacman);
+
+    // debugger;
+    getDirection(blinky);
+    queueGhostMovement(blinky);
+    move(blinky);
+    animate(blinky);
+
 
     if(pacman.body.x < 0) {
       pacman.reset(450, 272);
@@ -113,18 +128,19 @@ function getDotCoords() {
 
 function handleKeyPress() {
   if (cursors.left.isDown) {
-    pacman.current = 'LEFT';
+    pacman.queuedDirection = 'LEFT';
   } else if (cursors.right.isDown) {
-    pacman.current = 'RIGHT';
+    pacman.queuedDirection = 'RIGHT';
   }
 
   if (cursors.up.isDown) {
-    pacman.current = 'UP';
+    pacman.queuedDirection = 'UP';
   } else if (cursors.down.isDown) {
-    pacman.current = 'DOWN';
+    pacman.queuedDirection = 'DOWN';
   }
 
   if (spaceKey.isDown) {
-    console.log('Dots left:', dots.remaining);
+    console.log('blinky queued:', blinky.queuedDirection);
+    console.log('blinky current:', blinky.currentDirection);
   }
 }
