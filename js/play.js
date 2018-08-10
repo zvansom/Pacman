@@ -57,9 +57,22 @@ var PacmanGame = {
     blinky = game.add.sprite(216, 224, 'blinky');
     initProps(blinky);
     game.physics.arcade.enable(blinky);
-
-    blinky.frame = 56;
     blinky.body.velocity.x = SPEED;
+
+    pinky = game.add.sprite(232, 224, 'pinky');
+    initProps(pinky);
+    game.physics.arcade.enable(pinky);
+    pinky.body.velocity.x = -SPEED;
+
+    inky = game.add.sprite(232, 224, 'inky');
+    initProps(inky);
+    game.physics.arcade.enable(inky);
+    inky.body.velocity.x = -SPEED;
+
+    clyde = game.add.sprite(232, 224, 'clyde');
+    initProps(clyde);
+    game.physics.arcade.enable(clyde);
+    clyde.body.velocity.x = -SPEED;
 
     // ----- ANIMATIONS -----
     // Add the player animations
@@ -67,6 +80,27 @@ var PacmanGame = {
     pacman.animations.add('LEFT', [14, 15, 2, 15], 10, true);
     pacman.animations.add('UP', [28, 29, 2, 29], 10, true);
     pacman.animations.add('DOWN', [42, 43, 2, 43], 10, true);
+    pacman.animations.add('death', [3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 27], 10, false);
+
+    blinky.animations.add('RIGHT', [56, 57], 10, true);
+    blinky.animations.add('LEFT', [58, 59], 10, true);
+    blinky.animations.add('UP', [60, 61], 10, true);
+    blinky.animations.add('DOWN', [62, 63], 10, true);
+
+    pinky.animations.add('RIGHT', [70, 71], 10, true);
+    pinky.animations.add('LEFT', [72, 73], 10, true);
+    pinky.animations.add('UP', [74, 75], 10, true);
+    pinky.animations.add('DOWN', [76, 77], 10, true);
+
+    inky.animations.add('RIGHT', [84, 85], 10, true);
+    inky.animations.add('LEFT', [86, 87], 10, true);
+    inky.animations.add('UP', [88, 89], 10, true);
+    inky.animations.add('DOWN', [90, 91], 10, true);
+
+    clyde.animations.add('RIGHT', [98, 99], 10, true);
+    clyde.animations.add('LEFT', [100, 101], 10, true);
+    clyde.animations.add('UP', [102, 103], 10, true);
+    clyde.animations.add('DOWN', [104, 105], 10, true);
 
     // Add dot animations
     dots.callAll('animations.add', 'animations', 'flashing', [149, 152], 10, true);
@@ -80,32 +114,49 @@ var PacmanGame = {
 
   update: function() {
     game.physics.arcade.collide(pacman, sharedLayer);
+    game.physics.arcade.collide(blinky, sharedLayer);
+    game.physics.arcade.collide(pinky, sharedLayer);
+    game.physics.arcade.collide(inky, sharedLayer);
+    game.physics.arcade.collide(clyde, sharedLayer);
+    game.physics.arcade.collide(blinky, ghostLayer);
+    game.physics.arcade.collide(pinky, ghostLayer);
+    game.physics.arcade.collide(inky, ghostLayer);
+    game.physics.arcade.collide(clyde, ghostLayer);
     game.physics.arcade.collide(pacman, pacmanLayer);
     game.physics.arcade.overlap(pacman, dots, collectDot);
-    game.physics.arcade.collide(blinky, sharedLayer);
-    game.physics.arcade.collide(blinky, ghostLayer);
 
     dots.callAll('play', null, 'flashing');
     handleKeyPress();
-
-    getDirection(pacman);
+    handleOffscreen(pacman);
+    setCurrentDirection(pacman);
     move(pacman);
-    animate(pacman);
 
-    // debugger;
-    getDirection(blinky);
+    setCurrentDirection(blinky);
+    handleOffscreen(blinky);
     queueGhostMovement(blinky);
     move(blinky);
     animate(blinky);
 
+    setCurrentDirection(pinky);
+    handleOffscreen(pinky);
+    queueGhostMovement(pinky);
+    move(pinky);
+    animate(pinky);
 
-    if(pacman.body.x < 0) {
-      pacman.reset(450, 272);
-      pacman.body.velocity.x = -SPEED;
-    }
-    if(pacman.body.x > 450) {
-      pacman.reset(0, 272);
-      pacman.body.velocity.x = SPEED;
+    setCurrentDirection(inky);
+    handleOffscreen(inky);
+    queueGhostMovement(inky);
+    move(inky);
+    animate(inky);
+
+    setCurrentDirection(clyde);
+    handleOffscreen(clyde);
+    queueGhostMovement(clyde);
+    move(clyde);
+    animate(clyde);
+
+    if(pacman.queuedDirection === pacman.currentDirection) {
+      animate(pacman);
     }
 
     if(dots.remaining === 0) {
@@ -140,7 +191,9 @@ function handleKeyPress() {
   }
 
   if (spaceKey.isDown) {
-    console.log('blinky queued:', blinky.queuedDirection);
-    console.log('blinky current:', blinky.currentDirection);
+    pacman.animations.stop();
+    pacman.body.velocity.x = 0;
+    pacman.body.velocity.y = 0;
+    pacman.animations.play('death');
   }
 }

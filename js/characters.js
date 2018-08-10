@@ -23,7 +23,7 @@ function collectDot(pacman, dot) {
   dot.kill();
 }
 
-function getDirection(character) {
+function setCurrentDirection(character) {
   var direction;
   var prevX = Math.floor(character.prevX);
   var prevY = Math.floor(character.prevY);
@@ -50,5 +50,16 @@ function animate(character) {
   character.animations.play(character.currentDirection);
   if (character.currentDirection === character.queuedDirection) {
     character.queuedDirection = '';
+  }
+}
+
+function handleOffscreen(character) {
+  if(character.body.x < 0) {
+    character.reset(450, 272);
+    character.body.velocity.x = -SPEED;
+  }
+  if(character.body.x > 450) {
+    character.reset(0, 272);
+    character.body.velocity.x = SPEED;
   }
 }
