@@ -1,7 +1,7 @@
 function initProps(character) {
   character.prevX = null;
   character.prevY = null;
-  character.queuedDirection;
+  character.queuedDirection = '';
   character.currentDirection;
 }
 
@@ -40,15 +40,14 @@ function setCurrentDirection(character) {
     character.currentDirection = 'RIGHT';
   } else if(prevY < currY){
     character.currentDirection = 'DOWN';
-  } else {
-    // Do nothing.
-    return;
+  } else if (prevX === currX && prevY === currY) {
+    character.currentDirection = 'STOPPED';
   }
 }
 
 function animate(character) {
-  character.animations.play(character.currentDirection);
-  if (character.currentDirection === character.queuedDirection) {
+  if (character.queuedDirection === character.currentDirection) {
+    character.animations.play(character.currentDirection);
     character.queuedDirection = '';
   }
 }
@@ -62,4 +61,9 @@ function handleOffscreen(character) {
     character.reset(0, 272);
     character.body.velocity.x = SPEED;
   }
+}
+
+function handleCollision() {
+  pacman.lives--;
+  
 }

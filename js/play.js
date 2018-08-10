@@ -51,13 +51,15 @@ var PacmanGame = {
     pacman = game.add.sprite(216, 320, 'pacman');
     initProps(pacman);
     pacman.score = 0;
+    pacman.lives = 3;
     game.physics.arcade.enable(pacman);
 
     // Add ghosts
-    blinky = game.add.sprite(216, 224, 'blinky');
+    blinky = game.add.sprite(216, 320, 'blinky');
     initProps(blinky);
     game.physics.arcade.enable(blinky);
     blinky.body.velocity.x = SPEED;
+    blinky.frame = 56;
 
     pinky = game.add.sprite(232, 224, 'pinky');
     initProps(pinky);
@@ -124,12 +126,17 @@ var PacmanGame = {
     game.physics.arcade.collide(clyde, ghostLayer);
     game.physics.arcade.collide(pacman, pacmanLayer);
     game.physics.arcade.overlap(pacman, dots, collectDot);
+    game.physics.arcade.collide(pacman, blinky, handleCollision);
+    game.physics.arcade.collide(pacman, pinky, handleCollision);
+    game.physics.arcade.collide(pacman, inky, handleCollision);
+    game.physics.arcade.collide(pacman, clyde, handleCollision);
 
     dots.callAll('play', null, 'flashing');
     handleKeyPress();
     handleOffscreen(pacman);
     setCurrentDirection(pacman);
     move(pacman);
+    animate(pacman);
 
     setCurrentDirection(blinky);
     handleOffscreen(blinky);
@@ -155,10 +162,6 @@ var PacmanGame = {
     move(clyde);
     animate(clyde);
 
-    if(pacman.queuedDirection === pacman.currentDirection) {
-      animate(pacman);
-    }
-
     if(dots.remaining === 0) {
       game.pause();
     }
@@ -179,21 +182,19 @@ function getDotCoords() {
 
 function handleKeyPress() {
   if (cursors.left.isDown) {
-    pacman.queuedDirection = 'LEFT';
+    blinky.queuedDirection = 'LEFT';
   } else if (cursors.right.isDown) {
-    pacman.queuedDirection = 'RIGHT';
+    blinky.queuedDirection = 'RIGHT';
   }
 
   if (cursors.up.isDown) {
-    pacman.queuedDirection = 'UP';
+    blinky.queuedDirection = 'UP';
   } else if (cursors.down.isDown) {
-    pacman.queuedDirection = 'DOWN';
+    blinky.queuedDirection = 'DOWN';
   }
 
   if (spaceKey.isDown) {
-    pacman.animations.stop();
-    pacman.body.velocity.x = 0;
-    pacman.body.velocity.y = 0;
-    pacman.animations.play('death');
+    console.log('q', blinky.queuedDirection);
+    console.log('c', blinky.currentDirection);
   }
 }
