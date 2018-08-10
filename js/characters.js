@@ -24,19 +24,23 @@ function move(character) {
 }
 
 function collectDot(pacman, dot) {
-  pacman.score += 10;
+  score += 10;
   dot.parent.remaining--;
   dot.kill();
 }
 
 function collectPill(pacman, pill) {
-  console.log('pill collected');
-  pacman.score += 40;
+  clearTimeout(vulnerableTimer);
+  score += 40;
   vulnerableTimer = setTimeout(flashingVulnerable, 5000);
   blinky.vulnerable = true;
   pinky.vulnerable = true;
   inky.vulnerable = true;
   clyde.vulnerable = true;
+  blinky.flashing = false;
+  pinky.flashing = false;
+  inky.flashing = false;
+  clyde.flashing = false;
   pill.kill();
 }
 
@@ -84,7 +88,31 @@ function handleOffscreen(character) {
   }
 }
 
-function handleCollision() {
-  pacman.lives--;
+function handleCollision(pacman, ghost) {
+  if (ghost.vulnerable === true) {
+    score += 100;
+    ghost.kill();
+    resetGhost(ghost);
+  } else {
+    blinky.body.velocity.x = 0;
+    blinky.body.velocity.y = 0;
+    pacman.body.velocity.x = 0;
+    pacman.body.velocity.y = 0;
 
+    pacman.animations.play('death');
+    pacman.lives--;
+
+    restartTimer = setTimeout(restart, 3000);
+  }
+}
+
+function resetGhost(ghost) {
+  ghost.revive();
+  ghost.position.x = 232;
+  ghost.position.y = 288;
+}
+
+function restart() {
+  clearTimeout(restartTimer);
+  game.state.restart();
 }
