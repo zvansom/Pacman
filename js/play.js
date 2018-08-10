@@ -15,6 +15,7 @@ var PacmanGame = {
 
     // Load dot
     game.load.spritesheet('dot', './assets/spritesheet.png', 16, 16);
+    game.load.spritesheet('pill', './assets/spritesheet.png', 16, 16);
   },
 
 
@@ -37,7 +38,7 @@ var PacmanGame = {
     map.setCollisionByExclusion('224', true, ghostLayer);
 
     // Add dot tiles to map, enable physics and body.
-    dots = PacmanGame.add.group();
+    dots = game.add.group();
     dots.enableBody = true;
     var dotCoords = getDotCoords();
     dots.remaining = dotCoords.length;
@@ -47,6 +48,13 @@ var PacmanGame = {
       dots.create(dotCoords[i][0], dotCoords[i][1], 'dot', 149);
     }
 
+    // Add power pills to map, enable physics and body.
+    power_pills = game.add.group();
+    power_pills.enableBody = true;
+    [[16, 96], [416, 96], [16, 416], [416, 416]].forEach(position => {
+      power_pills.create(position[0], position[1], 'pill', 150);
+    })
+
     // Add the player controlled character
     pacman = game.add.sprite(216, 320, 'pacman');
     initProps(pacman);
@@ -55,23 +63,23 @@ var PacmanGame = {
     game.physics.arcade.enable(pacman);
 
     // Add ghosts
-    blinky = game.add.sprite(216, 320, 'blinky');
+    blinky = game.add.sprite(216, 288, 'blinky');
     initProps(blinky);
     game.physics.arcade.enable(blinky);
     blinky.body.velocity.x = SPEED;
-    blinky.frame = 56;
 
-    pinky = game.add.sprite(232, 224, 'pinky');
+
+    pinky = game.add.sprite(232, 288, 'pinky');
     initProps(pinky);
     game.physics.arcade.enable(pinky);
     pinky.body.velocity.x = -SPEED;
 
-    inky = game.add.sprite(232, 224, 'inky');
+    inky = game.add.sprite(232, 288, 'inky');
     initProps(inky);
     game.physics.arcade.enable(inky);
     inky.body.velocity.x = -SPEED;
 
-    clyde = game.add.sprite(232, 224, 'clyde');
+    clyde = game.add.sprite(232, 288, 'clyde');
     initProps(clyde);
     game.physics.arcade.enable(clyde);
     clyde.body.velocity.x = -SPEED;
@@ -106,7 +114,8 @@ var PacmanGame = {
 
     // Add dot animations
     dots.callAll('animations.add', 'animations', 'flashing', [149, 152], 10, true);
-    //
+    power_pills.callAll('animations.add', 'animations', 'flashing', [150, 153], 10, true);
+
     // Add keyboard listeners.
     cursors = game.input.keyboard.createCursorKeys();
 
@@ -126,12 +135,15 @@ var PacmanGame = {
     game.physics.arcade.collide(clyde, ghostLayer);
     game.physics.arcade.collide(pacman, pacmanLayer);
     game.physics.arcade.overlap(pacman, dots, collectDot);
+    game.physics.arcade.overlap(pacman, power_pills, collectPill);
     game.physics.arcade.collide(pacman, blinky, handleCollision);
     game.physics.arcade.collide(pacman, pinky, handleCollision);
     game.physics.arcade.collide(pacman, inky, handleCollision);
     game.physics.arcade.collide(pacman, clyde, handleCollision);
 
     dots.callAll('play', null, 'flashing');
+    power_pills.callAll('play', null, 'flashing');
+
     handleKeyPress();
     handleOffscreen(pacman);
     setCurrentDirection(pacman);
@@ -182,15 +194,15 @@ function getDotCoords() {
 
 function handleKeyPress() {
   if (cursors.left.isDown) {
-    blinky.queuedDirection = 'LEFT';
+    pacman.queuedDirection = 'LEFT';
   } else if (cursors.right.isDown) {
-    blinky.queuedDirection = 'RIGHT';
+    pacman.queuedDirection = 'RIGHT';
   }
 
   if (cursors.up.isDown) {
-    blinky.queuedDirection = 'UP';
+    pacman.queuedDirection = 'UP';
   } else if (cursors.down.isDown) {
-    blinky.queuedDirection = 'DOWN';
+    pacman.queuedDirection = 'DOWN';
   }
 
   if (spaceKey.isDown) {
