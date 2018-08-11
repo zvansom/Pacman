@@ -3,7 +3,6 @@ function initProps(character) {
   character.prevY = null;
   character.queuedDirection = '';
   character.currentDirection;
-  character.lastDirection;
 
   if (character.key !== 'pacman') {
     character.vulnerable = false;
@@ -67,6 +66,7 @@ function setCurrentDirection(character) {
   } else if (prevX === currX && prevY === currY) {
     character.currentDirection = 'STOPPED';
   }
+
 }
 
 function animate(character) {

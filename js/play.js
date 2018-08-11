@@ -1,3 +1,4 @@
+
 var PacmanGame = {
   create: function() {
     // Add the tile map and background image.
@@ -9,7 +10,7 @@ var PacmanGame = {
 
     // TODO: UPDATE EXLUSION LIST TO BE CHARACTER SPECIFIC
     // Add collision to all tiles with 'index' !== 0
-    map.setCollisionByExclusion('224', true, pacmanLayer);
+    // map.setCollisionByExclusion('224', true, pacmanLayer);
     map.setCollisionByExclusion('224', true, ghostLayer);
     map.setCollisionByExclusion('224', true, sharedLayer);
 
@@ -24,8 +25,6 @@ var PacmanGame = {
       dots.create(dotCoords[i][0], dotCoords[i][1], 'dot', 149);
     }
 
-    dots.callAll(body, 'setSize', 6, 6, 5, 5);
-
     // Add power pills to map, enable physics and body.
     power_pills = game.add.group();
     power_pills.enableBody = true;
@@ -37,7 +36,6 @@ var PacmanGame = {
     pacman = game.add.sprite(216, 320, 'pacman');
     initProps(pacman);
     game.physics.arcade.enable(pacman);
-    pacman.body.setSize(12, 12, 2, 2);
 
     // Add ghosts
     blinky = game.add.sprite(176, 288, 'blinky');
@@ -45,7 +43,6 @@ var PacmanGame = {
     game.physics.arcade.enable(blinky);
     blinky.body.velocity.x = SPEED;
     blinky.frame = 56;
-    blinky.body.setSize(12, 12, 2, 2);
 
 
     pinky = game.add.sprite(192, 288, 'pinky');
@@ -126,30 +123,17 @@ var PacmanGame = {
   },
 
   update: function() {
+    characters = [pacman, blinky, pinky, inky, clyde];
 
-    game.physics.arcade.collide(pacman, sharedLayer);
-    game.physics.arcade.collide(blinky, sharedLayer);
-    game.physics.arcade.collide(pinky, sharedLayer);
-    game.physics.arcade.collide(inky, sharedLayer);
-    game.physics.arcade.collide(clyde, sharedLayer);
-    game.physics.arcade.collide(blinky, ghostLayer);
-    game.physics.arcade.collide(pinky, ghostLayer);
-    game.physics.arcade.collide(inky, ghostLayer);
-    game.physics.arcade.collide(clyde, ghostLayer);
-    game.physics.arcade.collide(pacman, pacmanLayer);
-    game.physics.arcade.overlap(pacman, dots, collectDot);
-    game.physics.arcade.overlap(pacman, power_pills, collectPill);
-    game.physics.arcade.collide(pacman, blinky, handleCollision);
-    game.physics.arcade.collide(pacman, pinky, handleCollision);
-    game.physics.arcade.collide(pacman, inky, handleCollision);
-    game.physics.arcade.collide(pacman, clyde, handleCollision);
     dots.callAll('play', null, 'flashing');
     power_pills.callAll('play', null, 'flashing');
     livesImage.callAll('play', null, 'flashing');
 
     handleKeyPress();
+    checkReleaseGhost();
 
-    [pacman, blinky, pinky, inky, clyde].forEach(character => {
+    characters.forEach(character => {
+      checkCollisions(character)
       setCurrentDirection(character);
       handleOffscreen(character);
       queueGhostMovement(character);
@@ -161,12 +145,22 @@ var PacmanGame = {
       restartTimer = setTimeout(nextStage, 1000);
     }
 
-    checkReleaseGhost();
-  }, render: function() {
-    game.debug.body(pacman);
-    game.debug.body(blinky);
+  // }, render: function() {
+  //   game.debug.body(pacman);
+  //   game.debug.body(blinky);
   }
 };
+
+function checkCollisions(character) {
+  if (character.key === 'pacman') {
+    game.physics.arcade.overlap(pacman, dots, collectDot);
+    game.physics.arcade.overlap(pacman, power_pills, collectPill);
+  } else {
+    game.physics.arcade.collide(character, ghostLayer);
+    game.physics.arcade.collide(pacman, character, handleCollision);
+  }
+  game.physics.arcade.collide(character, sharedLayer);
+}
 
 function getDotCoords() {
   var tileCoords = [];
@@ -182,19 +176,15 @@ function getDotCoords() {
 
 function handleKeyPress() {
   if (cursors.left.isDown) {
-    console.log('left');
-    pacman.queuedDirection = 'LEFT';
+    blinky.queuedDirection = 'LEFT';
   } else if (cursors.right.isDown) {
-    console.log('right');
-    pacman.queuedDirection = 'RIGHT';
+    blinky.queuedDirection = 'RIGHT';
   }
 
   if (cursors.up.isDown) {
-    console.log('up');
-    pacman.queuedDirection = 'UP';
+    blinky.queuedDirection = 'UP';
   } else if (cursors.down.isDown) {
-    console.log('down');
-    pacman.queuedDirection = 'DOWN';
+    blinky.queuedDirection = 'DOWN';
   }
 
   if (spaceKey.isDown) {

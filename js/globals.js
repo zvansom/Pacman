@@ -3,7 +3,7 @@ var map, sharedLayer, pacmanLayer, ghostLayer, ghostTurns;
 
 // Initialize on-screen objects
 var pacman, blinky, pinky, inky, clyde, dots, power_pills;
-var ghosts;
+var characters;
 
 // Initialize text-based displays
 var scoreText, highScore, livesDisplay;
