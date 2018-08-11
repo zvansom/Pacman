@@ -3,6 +3,7 @@ function initProps(character) {
   character.prevY = null;
   character.queuedDirection = '';
   character.currentDirection;
+  character.lastDirection;
 
   if (character.key !== 'pacman') {
     character.vulnerable = false;
@@ -24,10 +25,6 @@ function move(character) {
   }
 }
 
-function addScore(amount) {
-  score += amount;
-  scoreText.text = 'Score: ' + score.toString();
-}
 
 function collectDot(pacman, dot) {
   addScore(10);
@@ -101,15 +98,18 @@ function handleCollision(pacman, ghost) {
     ghostsInPlay--;
     resetGhost(ghost);
   } else {
-    blinky.body.velocity.x = 0;
-    blinky.body.velocity.y = 0;
-    pacman.body.velocity.x = 0;
-    pacman.body.velocity.y = 0;
-
+    pacman.currentDirection = '';
+    pacman.body.enable = false;
+    pacman.body.moves = false;
     pacman.animations.play('death');
-    pacman.lives--;
+    lives--;
+    livesImage.children.pop();
 
-    restartTimer = setTimeout(restart, 3000);
+    if (lives !== 0) {
+      restartTimer = setTimeout(restart, 3000);
+    } else {
+      console.log('game over');
+    }
   }
 }
 

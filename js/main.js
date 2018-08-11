@@ -4,6 +4,5 @@ game.state.add('load', loadState);
 game.state.add('menu', menuState);
 game.state.add('tutorial', tutorialState);
 game.state.add('play', PacmanGame);
-// game.state.add('gameover', gameoverState);
 
-game.state.start('play');
+game.state.start('boot');
