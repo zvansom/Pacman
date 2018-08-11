@@ -12,7 +12,10 @@ var bootState = {
 
 var loadState = {
   preload: function() {
-    var loadingText = game.add.text(80, 72, 'Loading...', {font: '30px Arial', fill: '#ffffff'});
+    loadingText = game.add.text(80, 72, 'Loading...', {font: '30px Arial', fill: '#ffffff'});
+    loadingText.font = 'Press Start 2P';
+
+    game.load.image('title', './assets/pacman_title.png');
 
     game.load.tilemap('map', './assets/pacman_tile_map.json', null, Phaser.Tilemap.TILED_JSON);
     game.load.image('spritesheet', './assets/spritesheet.png');
