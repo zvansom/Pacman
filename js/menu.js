@@ -16,12 +16,13 @@ var menuState = {
 
   start: function() {
     clearInterval(menuTimer);
-    game.state.start('tutorial');
+    buffer = setTimeout(function() {game.state.start('tutorial')}, 500);
   }
 }
 
 var tutorialState = {
   create: function() {
+    clearTimeout(buffer);
     bgImg = game.add.image(0, 0, 'bg');
 
     var pressNext = game.input.keyboard.addKey(Phaser.Keyboard.ENTER);
@@ -40,7 +41,7 @@ var tutorialState = {
 
   play: function() {
     clearTimeout(tutorialTimer);
-    game.state.start('play')
+    buffer = setTimeout(function() {game.state.start('play')}, 500);
   }
 }
 

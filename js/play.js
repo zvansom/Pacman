@@ -1,5 +1,5 @@
-var powerPillCoords = [[16, 96], [416, 96], [16, 416], [416, 416]];
 var PacmanGame = {
+
   create: function() {
     // Add the tile map and background image.
     map = game.add.tilemap('map');
@@ -29,7 +29,7 @@ var PacmanGame = {
       power_pills.create(position[0], position[1], 'pill', 150);
     });
 
-    // Add the player controlled character
+    // Add pacman and ghosts at starting locations with starting frames.
     pacman = game.add.sprite(216, 320, 'pacman');
     pacman.frame = 0;
     blinky = game.add.sprite(176, 288, 'blinky');
@@ -41,11 +41,12 @@ var PacmanGame = {
     clyde = game.add.sprite(224, 288, 'clyde');
     clyde.frame = 98;
 
+    // Collect all characters and set initial shared properties.
     characters = [pacman, blinky, pinky, inky, clyde];
     characters.forEach(character => {initProps(character)});
 
     // ----- ANIMATIONS -----
-    // Add the player animations
+    // Add the unique player animations.
     pacman.animations.add('RIGHT', [0, 1, 2, 1], 10, true);
     pacman.animations.add('LEFT', [14, 15, 2, 15], 10, true);
     pacman.animations.add('UP', [28, 29, 2, 29], 10, true);
@@ -93,55 +94,45 @@ var PacmanGame = {
 
     livesImage = game.add.group();
     for(var j = 0; j < lives; j++) {
-      // 1st Property Formula: (1st child margin left + margin between + position multiplier);
+      // x position formula: (to 1st child + margin between + position multiplier);
       livesImage.create(20 + 4 + (16 * j), 570, 'pacman', 0);
     }
 
+    //
     livesImage.callAll('animations.add', 'animations', 'flashing', [0, 1, 2, 1], 10, true);
 
     // Add keyboard listeners.
     cursors = game.input.keyboard.createCursorKeys();
-
-    // Spacebar included for convenience in testing.
-    spaceKey = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
   },
 
   update: function() {
+    //  Game loop
     characters = [pacman, blinky, pinky, inky, clyde];
     animateItems = [dots, power_pills, livesImage];
 
     animateItems.forEach(item => {item.callAll('play', null, 'flashing')});
 
-    handleKeyPress();
-    checkReleaseGhost();
-
     characters.forEach(character => {
-      checkCollisions(character)
+      checkAllCollisions(character)
       setCurrentDirection(character);
       handleOffscreen(character);
       queueGhostMovement(character);
-      move(character);
-      animate(character);
+      setCharacterVelocity(character);
+      playActiveAnimation(character);
     });
 
+    handleKeyPress();
+    checkReleaseGhost();
+
+    // Check win condition
     if(dots.remaining === 0) {
       characters.forEach(character => { toggleFreeze(character)});
-      restartTimer = setTimeout(function() {nextStage(characters)}, 3000);
+      restartTimer = setTimeout(resetStage, 3000);
     }
   }
 };
 
-function checkCollisions(character) {
-  if (character.key === 'pacman') {
-    game.physics.arcade.overlap(character, dots, collectDot);
-    game.physics.arcade.overlap(character, power_pills, collectPill);
-  } else {
-    game.physics.arcade.collide(character, ghostLayer);
-    game.physics.arcade.collide(pacman, character, handleCollision);
-  }
-  game.physics.arcade.collide(character, dotLayer);
-}
-
+// Used for initial map generation.
 function getDotCoords() {
   var tileCoords = [];
   for (var i = 0; i < dotLayer.layer.data.length; i++) {
@@ -154,26 +145,27 @@ function getDotCoords() {
   return tileCoords;
 }
 
+// Update the scoreboard to reflect player score.
+function addScore(amount) {
+  score += amount;
+  scoreDisplay.text = score.toString();
+}
+
+// Only allow 1 keypress at a time.
 function handleKeyPress() {
   if (cursors.left.isDown) {
     pacman.queuedDirection = 'LEFT';
   } else if (cursors.right.isDown) {
     pacman.queuedDirection = 'RIGHT';
-  }
-
-  if (cursors.up.isDown) {
+  } else if (cursors.up.isDown) {
     pacman.queuedDirection = 'UP';
   } else if (cursors.down.isDown) {
     pacman.queuedDirection = 'DOWN';
   }
-
-  if (spaceKey.isDown) {
-    console.log('pacman', pacman.currentDirection);
-    console.log('blinky', blinky.currentDirection);
-  }
 }
 
-function restart() {
+// Reset all characters after Pacman death.
+function resetAll() {
   clearTimeout(restartTimer);
   pacman.animations.stop('death');
   pacman.body.enable = true;
@@ -187,13 +179,19 @@ function restart() {
   ghostsInPlay = 0;
 }
 
-function nextStage(characters) {
+// Reset whole stage on dots cleared.
+function resetStage(characters) {
+  clearTimeout(restartTimer);
   ghostsInPlay  = 0;
   game.state.restart('play');
 }
 
+// End game.
+function gameOver() {
+  clearTimeout(restartTimer);
+  var gameOverText = game.add.text(150, 320, 'GAME OVER', {fill: '#ffffff'});
+  gameOverText.fontSize = '16px';
+  gameOverText.font = 'Press Start 2P';
 
-function addScore(amount) {
-  score += amount;
-  scoreDisplay.text = score.toString();
+  menuTimer = setInterval(function() {flashTitle(gameOverText)}, 1000);
 }
