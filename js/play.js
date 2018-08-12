@@ -101,6 +101,12 @@ var PacmanGame = {
     //
     livesImage.callAll('animations.add', 'animations', 'flashing', [0, 1, 2, 1], 10, true);
 
+    // Add game audio.
+    chompSound = game.add.sound('chompSound');
+    chompSound.allowMultiple = false;
+    deathSound = game.add.audio('deathSound');
+    eatGhost = game.add.audio('eatGhost');
+
     // Add keyboard listeners.
     cursors = game.input.keyboard.createCursorKeys();
   },
@@ -124,6 +130,10 @@ var PacmanGame = {
     handleKeyPress();
     checkReleaseGhost();
 
+    if(pacman.currentDirection !== 'STOPPED') {
+      chompSound.play('', 0, 1, false , false);
+    }
+
     // Check win condition
     if(dots.remaining === 0) {
       characters.forEach(character => { toggleFreeze(character)});
@@ -131,6 +141,9 @@ var PacmanGame = {
     }
   }
 };
+
+function playAudio() {
+}
 
 // Used for initial map generation.
 function getDotCoords() {

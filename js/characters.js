@@ -3,7 +3,7 @@ function initProps(character) {
   character.prevX = null;
   character.prevY = null;
   character.queuedDirection = '';
-  character.currentDirection;
+  character.currentDirection = 'STOPPED';
 
   // Ghost only properties.
   if (character.key !== 'pacman') {
@@ -94,6 +94,7 @@ function handleOffscreen(character) {
 
 function handleCollision(pacman, ghost) {
   if (ghost.vulnerable === true) {
+    eatGhost.play();
     ghost.body.enable = false;
     addScore(100);
     ghost.kill();
@@ -105,6 +106,8 @@ function handleCollision(pacman, ghost) {
     pacman.body.enable = false;
     pacman.body.moves = false;
     pacman.animations.play('death');
+    chompSound.pause();
+    deathSound.play();
     lives--;
     livesImage.children.pop();
 
