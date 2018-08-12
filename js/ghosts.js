@@ -1,3 +1,4 @@
+// Randomize ghost movement.
 function queueGhostMovement(ghost) {
   if(ghost.key === 'pacman') {
     return;
@@ -26,8 +27,15 @@ function queueGhostMovement(ghost) {
         default:
           break;
       }
-    } else if (ghost.queudDirection === '' && ghost.currentDirection === 'STOPPED') {
-      ghost.queudDirection = 'DOWN';
+
+    }
+    // Don't let the ghosts stand still.
+    else if (ghost.queudDirection === '' && ghost.currentDirection === 'STOPPED') {
+      if (Math.random() > 0.5) {
+        ghost.queudDirection = 'DOWN';
+      } else {
+        ghost.queudDirection = 'UP';
+      }
     } else if (ghost.currentDirection === 'STOPPED') {
       if (ghost.queuedDirection === 'LEFT' && ghost.body.blocked.left === true) {
         ghost.queuedDirection = 'RIGHT';
@@ -44,23 +52,18 @@ function queueGhostMovement(ghost) {
 
 function flashingVulnerable() {
   clearTimeout(vulnerableTimer);
-  vulnerableTimer = setTimeout(toggleVulnerable, 3000);
-  blinky.flashing = true;
-  pinky.flashing = true;
-  inky.flashing = true;
-  clyde.flashing = true;
+  vulnerableTimer = setTimeout(removeVulnerable, 3000);
+  ghosts = [blinky, pinky, inky, clyde];
+  ghosts.forEach(ghost => {ghost.flashing = true});
 }
 
-function toggleVulnerable() {
+function removeVulnerable() {
   clearTimeout(vulnerableTimer);
-  blinky.vulnerable = false;
-  pinky.vulnerable = false;
-  inky.vulnerable = false;
-  clyde.vulnerable = false;
-  blinky.flashing = false;
-  pinky.flashing = false;
-  inky.flashing = false;
-  clyde.flashing = false;
+  ghosts = [blinky, pinky, inky, clyde];
+  ghosts.forEach(ghost => {
+    ghost.vulnerable = false;
+    ghost.flashing = false;
+  });
 }
 
 function checkReleaseGhost() {
@@ -72,22 +75,37 @@ function checkReleaseGhost() {
 function releaseGhost() {
   clearTimeout(releaseTimer);
   releaseTimer = 0;
+  var speed = SPEED;
   ghostsInPlay++;
+
+  // Randomize left or right.
+  if (Math.random > 0.5) {
+    speed = -speed;
+  }
+
+  // Find a ghost in the center square and release.
   if (blinky.body.position.x >= 174 && blinky.body.position.x <= 276 &&
     blinky.body.position.y >= 253 && blinky.body.position.y <= 309) {
       blinky.reset(216, 224);
-      blinky.body.velocity.x = 100;
+      blinky.body.velocity.x = speed;
   } else if (pinky.body.position.x >= 174 && pinky.body.position.x <= 276 &&
     pinky.body.position.y >= 253 && pinky.body.position.y <= 309) {
       pinky.reset(216, 224);
-      pinky.body.velocity.x = 100;
+      pinky.body.velocity.x = speed;
   } else if (inky.body.position.x >= 174 && inky.body.position.x <= 276 &&
     inky.body.position.y >= 253 && inky.body.position.y <= 309) {
     inky.reset(216, 224);
-    inky.body.velocity.x = 100;
+    inky.body.velocity.x = speed;
   } else if (clyde.body.position.x >= 174 && clyde.body.position.x <= 276 &&
     clyde.body.position.y >= 253 && clyde.body.position.y <= 309) {
     clyde.reset(216, 224);
-    clyde.body.velocity.x = 100;
+    clyde.body.velocity.x = speed;
   }
+}
+
+function resetGhost(ghost) {
+  ghost.revive();
+  ghost.body.enable = true;
+  ghost.position.x = 232;
+  ghost.position.y = 288;
 }

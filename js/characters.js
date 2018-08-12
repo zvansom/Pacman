@@ -5,6 +5,7 @@ function initProps(character) {
   character.queuedDirection = '';
   character.currentDirection;
 
+  // Ghost only properties.
   if (character.key !== 'pacman') {
     character.vulnerable = false;
     character.released = false;
@@ -19,10 +20,20 @@ function initProps(character) {
     character.animations.add('vulnerable', [64, 65], 10, true);
     character.animations.add('flashing', [64, 65, 66, 67], 10, true);
   }
-
 }
 
-function move(character) {
+function checkAllCollisions(character) {
+  if (character.key === 'pacman') {
+    game.physics.arcade.overlap(character, dots, collectDot);
+    game.physics.arcade.overlap(character, power_pills, collectPill);
+  } else {
+    game.physics.arcade.collide(character, ghostLayer);
+    game.physics.arcade.collide(pacman, character, handleCollision);
+  }
+  game.physics.arcade.collide(character, dotLayer);
+}
+
+function setCharacterVelocity(character) {
   var speed = SPEED;
   if (character.queuedDirection === 'LEFT' || character.queuedDirection === 'UP') {
     speed = -speed;
@@ -32,28 +43,6 @@ function move(character) {
   } else if (character.queuedDirection === 'UP' || character.queuedDirection === 'DOWN') {
     character.body.velocity.y = speed;
   }
-}
-
-
-function collectDot(pacman, dot) {
-  addScore(10);
-  dot.parent.remaining--;
-  dot.kill();
-}
-
-function collectPill(pacman, pill) {
-  clearTimeout(vulnerableTimer);
-  addScore(40);
-  vulnerableTimer = setTimeout(flashingVulnerable, 5000);
-  blinky.vulnerable = true;
-  pinky.vulnerable = true;
-  inky.vulnerable = true;
-  clyde.vulnerable = true;
-  blinky.flashing = false;
-  pinky.flashing = false;
-  inky.flashing = false;
-  clyde.flashing = false;
-  pill.kill();
 }
 
 function setCurrentDirection(character) {
@@ -76,15 +65,17 @@ function setCurrentDirection(character) {
   } else if (prevX === currX && prevY === currY) {
     character.currentDirection = 'STOPPED';
   }
-
 }
 
-function animate(character) {
+function playActiveAnimation(character) {
+  // Handle shared ghost animations
   if (character.vulnerable === true && character.flashing === true) {
     character.animations.play('flashing');
   } else if (character.vulnerable === true) {
     character.animations.play('vulnerable');
-  } else if (character.queuedDirection === character.currentDirection) {
+  }
+  // All character animations
+  else if (character.queuedDirection === character.currentDirection) {
     character.animations.play(character.currentDirection);
     character.queuedDirection = '';
   }
@@ -118,28 +109,13 @@ function handleCollision(pacman, ghost) {
     livesImage.children.pop();
 
     if (lives !== 0) {
-      restartTimer = setTimeout(restart, 3000);
+      restartTimer = setTimeout(resetAll, 3000);
     } else {
       restartTimer = setTimeout(gameOver, 3000);
     }
   }
 }
 
-function resetGhost(ghost) {
-  ghost.revive();
-  ghost.body.enable = true;
-  ghost.position.x = 232;
-  ghost.position.y = 288;
-}
-
 function toggleFreeze(character) {
   character.body.moves = false;
-}
-
-function gameOver() {
-  var gameOverText = game.add.text(150, 320, 'GAME OVER', {fill: '#ffffff'});
-  gameOverText.fontSize = '16px';
-  gameOverText.font = 'Press Start 2P';
-
-  menuTimer = setInterval(function() {flashTitle(gameOverText)}, 1000);
 }

@@ -1,5 +1,6 @@
 // Initialize map objects
 var map, sharedLayer, pacmanLayer, ghostLayer, ghostTurns;
+var powerPillCoords = [[16, 96], [416, 96], [16, 416], [416, 416]];
 
 // Initialize on-screen objects
 var pacman, blinky, pinky, inky, clyde, dots, power_pills;
