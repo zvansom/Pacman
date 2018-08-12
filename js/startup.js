@@ -1,6 +1,6 @@
 var bootState = {
   preload: function() {
-    game.load.image('bg', './assets/walls.png');
+    game.load.image('bg', './assets/bgMaze.png');
   },
 
   create: function() {
@@ -12,10 +12,11 @@ var bootState = {
 
 var loadState = {
   preload: function() {
+    loadingText = game.add.text(175, 280, 'Loading...', {fill: '#ffffff'});
+    loadingText.font = 'Press Start 2P';
+    loadingText.fontSize = '14px';
 
-    var bgImg = game.add.image(0, 0, 'bg');
-
-    var loadingText = game.add.text(80, 72, 'Loading...', {font: '30px Arial', fill: '#ffffff'});
+    game.load.image('title', './assets/pacman_title.png');
 
     game.load.tilemap('map', './assets/pacman_tile_map.json', null, Phaser.Tilemap.TILED_JSON);
     game.load.image('spritesheet', './assets/spritesheet.png');
@@ -31,6 +32,7 @@ var loadState = {
 
     // Load dot
     game.load.spritesheet('dot', './assets/spritesheet.png', 16, 16);
+    game.load.spritesheet('pill', './assets/spritesheet.png', 16, 16);
   },
 
   create: function() {

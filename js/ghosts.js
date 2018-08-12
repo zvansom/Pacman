@@ -26,6 +26,8 @@ function queueGhostMovement(ghost) {
         default:
           break;
       }
+    } else if (ghost.queudDirection === 'STOPPED' && ghost.currentDirection === '') {
+      ghost.queudDirection = 'DOWN';
     } else if (ghost.currentDirection === 'STOPPED') {
       if (ghost.queuedDirection === 'LEFT' && ghost.body.blocked.left === true) {
         ghost.queuedDirection = 'RIGHT';
@@ -62,8 +64,9 @@ function toggleVulnerable() {
 }
 
 function checkReleaseGhost() {
+  console.log('ghosts in play:', ghostsInPlay)
   if (ghostsInPlay < 4 && !releaseTimer) {
-    releaseTimer = setTimeout(releaseGhost, 5000);
+    releaseTimer = setTimeout(releaseGhost, 3500);
   }
 }
 
@@ -71,5 +74,26 @@ function releaseGhost() {
   clearTimeout(releaseTimer);
   releaseTimer = 0;
   ghostsInPlay++;
-  console.log('released a ghost');
+  console.log('release a ghost!')
+  if (blinky.body.position.x >= 174 && blinky.body.position.x <= 276 &&
+    blinky.body.position.y >= 253 && blinky.body.position.y <= 309) {
+      console.log('blinky');
+      blinky.reset(216, 224);
+      blinky.body.velocity.x = 100;
+  } else if (pinky.body.position.x >= 174 && pinky.body.position.x <= 276 &&
+    pinky.body.position.y >= 253 && pinky.body.position.y <= 309) {
+      console.log('pinky');
+      pinky.reset(216, 224);
+      pinky.body.velocity.x = 100;
+  } else if (inky.body.position.x >= 174 && inky.body.position.x <= 276 &&
+    inky.body.position.y >= 253 && inky.body.position.y <= 309) {
+      console.log('inky');
+    inky.reset(216, 224);
+    inky.body.velocity.x = 100;
+  } else if (clyde.body.position.x >= 174 && clyde.body.position.x <= 276 &&
+    clyde.body.position.y >= 253 && clyde.body.position.y <= 309) {
+      console.log('clyde');
+    clyde.reset(216, 224);
+    clyde.body.velocity.x = 100;
+  }
 }

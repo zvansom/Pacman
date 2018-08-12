@@ -1,4 +1,5 @@
 function initProps(character) {
+  game.physics.arcade.enable(character);
   character.prevX = null;
   character.prevY = null;
   character.queuedDirection = '';
@@ -9,7 +10,16 @@ function initProps(character) {
     character.released = false;
     character.flashing = false;
     character.released = false;
+    character.body.setSize(15, 15, 0.5, 0.5);
+
+    // Sets initial ghost movement
+    character.body.velocity.x = Math.random() < 0.5 ? SPEED : -SPEED;
+
+    //Add shared animations;
+    character.animations.add('vulnerable', [64, 65], 10, true);
+    character.animations.add('flashing', [64, 65, 66, 67], 10, true);
   }
+
 }
 
 function move(character) {
@@ -24,10 +34,6 @@ function move(character) {
   }
 }
 
-function addScore(amount) {
-  score += amount;
-  scoreText.text = 'Score: ' + score.toString();
-}
 
 function collectDot(pacman, dot) {
   addScore(10);
@@ -70,6 +76,7 @@ function setCurrentDirection(character) {
   } else if (prevX === currX && prevY === currY) {
     character.currentDirection = 'STOPPED';
   }
+
 }
 
 function animate(character) {
@@ -96,25 +103,42 @@ function handleOffscreen(character) {
 
 function handleCollision(pacman, ghost) {
   if (ghost.vulnerable === true) {
+    ghost.body.enable = false;
     addScore(100);
     ghost.kill();
     ghostsInPlay--;
-    resetGhost(ghost);
+    buffer = setTimeout(function() {resetGhost(ghost)}, 1000);
   } else {
-    blinky.body.velocity.x = 0;
-    blinky.body.velocity.y = 0;
-    pacman.body.velocity.x = 0;
-    pacman.body.velocity.y = 0;
-
+    pacman.currentDirection = '';
+    pacman.body.enable = false;
+    pacman.body.moves = false;
     pacman.animations.play('death');
-    pacman.lives--;
+    lives--;
+    livesImage.children.pop();
 
-    restartTimer = setTimeout(restart, 3000);
+    if (lives !== 0) {
+      restartTimer = setTimeout(restart, 3000);
+    } else {
+      restartTimer = setTimeout(gameOver, 3000);
+    }
   }
 }
 
 function resetGhost(ghost) {
   ghost.revive();
+  ghost.body.enable = true;
   ghost.position.x = 232;
   ghost.position.y = 288;
+}
+
+function toggleFreeze(character) {
+  character.body.moves = false;
+}
+
+function gameOver() {
+  var gameOverText = game.add.text(150, 320, 'GAME OVER', {fill: '#ffffff'});
+  gameOverText.fontSize = '16px';
+  gameOverText.font = 'Press Start 2P';
+
+  menuTimer = setInterval(function() {flashTitle(gameOverText)}, 1000);
 }

@@ -1,41 +1,17 @@
+var powerPillCoords = [[16, 96], [416, 96], [16, 416], [416, 416]];
 var PacmanGame = {
-  // ALL PRELOAD FROM IN LOAD STATE
-  preload: function() {
-    game.load.tilemap('map', './assets/pacman_tile_map.json', null, Phaser.Tilemap.TILED_JSON);
-    game.load.image('spritesheet', './assets/spritesheet.png');
-
-    // Load pacman
-    game.load.spritesheet('pacman', './assets/spritesheet.png', 16, 16);
-
-    // Load ghosts
-    game.load.spritesheet('blinky', './assets/spritesheet.png', 16, 16);
-    game.load.spritesheet('pinky', './assets/spritesheet.png', 16, 16);
-    game.load.spritesheet('inky', './assets/spritesheet.png', 16, 16);
-    game.load.spritesheet('clyde', './assets/spritesheet.png', 16, 16);
-
-    // Load dot
-    game.load.spritesheet('dot', './assets/spritesheet.png', 16, 16);
-    game.load.spritesheet('pill', './assets/spritesheet.png', 16, 16);
-  },
-
-
   create: function() {
-    // FROM BOOT
-    game.physics.startSystem(Phaser.Physics.ARCADE);
-    // END BOOT
-
     // Add the tile map and background image.
     map = game.add.tilemap('map');
     map.addTilesetImage('Pacman Assets', 'spritesheet');
-    sharedLayer = map.createLayer('Shared Layer');
-    pacmanLayer = map.createLayer('Pacman Layer');
-    ghostLayer = map.createLayer('Ghost Layer');
+    dotLayer = map.createLayer('Dot Layer');
+    charLayer = map.createLayer('Character Layer');
 
     // TODO: UPDATE EXLUSION LIST TO BE CHARACTER SPECIFIC
     // Add collision to all tiles with 'index' !== 0
-    map.setCollisionByExclusion('224', true, sharedLayer);
-    map.setCollisionByExclusion('224', true, pacmanLayer);
-    map.setCollisionByExclusion('224', true, ghostLayer);
+    // map.setCollisionByExclusion('224', true, charLayer);
+    map.setCollisionByExclusion('224', true, dotLayer);
+    map.setCollisionByExclusion('224', true, charLayer);
 
     // Add dot tiles to map, enable physics and body.
     dots = game.add.group();
@@ -51,40 +27,25 @@ var PacmanGame = {
     // Add power pills to map, enable physics and body.
     power_pills = game.add.group();
     power_pills.enableBody = true;
-    [[16, 96], [416, 96], [16, 416], [416, 416]].forEach(position => {
+    powerPillCoords.forEach(position => {
       power_pills.create(position[0], position[1], 'pill', 150);
-    })
+    });
 
     // Add the player controlled character
     pacman = game.add.sprite(216, 320, 'pacman');
-    initProps(pacman);
-    game.physics.arcade.enable(pacman);
-
-    // Add ghosts
+    pacman.frame = 0;
     blinky = game.add.sprite(176, 288, 'blinky');
-    initProps(blinky);
-    game.physics.arcade.enable(blinky);
-    blinky.body.velocity.x = SPEED;
     blinky.frame = 56;
-
-
     pinky = game.add.sprite(192, 288, 'pinky');
-    initProps(pinky);
-    game.physics.arcade.enable(pinky);
-    pinky.body.velocity.x = -SPEED;
     pinky.frame = 70;
-
     inky = game.add.sprite(208, 288, 'inky');
-    initProps(inky);
-    game.physics.arcade.enable(inky);
-    inky.body.velocity.x = -SPEED;
     inky.frame = 84;
-
     clyde = game.add.sprite(224, 288, 'clyde');
-    initProps(clyde);
-    game.physics.arcade.enable(clyde);
-    clyde.body.velocity.x = -SPEED;
     clyde.frame = 98;
+
+    characters = [pacman, blinky, pinky, inky, clyde];
+
+    characters.forEach(character => {initProps(character)});
 
     // ----- ANIMATIONS -----
     // Add the player animations
@@ -98,36 +59,48 @@ var PacmanGame = {
     blinky.animations.add('LEFT', [58, 59], 10, true);
     blinky.animations.add('UP', [60, 61], 10, true);
     blinky.animations.add('DOWN', [62, 63], 10, true);
-    blinky.animations.add('vulnerable', [64, 65], 10, true);
-    blinky.animations.add('flashing', [64, 65, 66, 67], 10, true);
 
     pinky.animations.add('RIGHT', [70, 71], 10, true);
     pinky.animations.add('LEFT', [72, 73], 10, true);
     pinky.animations.add('UP', [74, 75], 10, true);
     pinky.animations.add('DOWN', [76, 77], 10, true);
-    pinky.animations.add('vulnerable', [64, 65], 10, true);
-    pinky.animations.add('flashing', [64, 65, 66, 67], 10, true);
 
     inky.animations.add('RIGHT', [84, 85], 10, true);
     inky.animations.add('LEFT', [86, 87], 10, true);
     inky.animations.add('UP', [88, 89], 10, true);
     inky.animations.add('DOWN', [90, 91], 10, true);
-    inky.animations.add('vulnerable', [64, 65], 10, true);
-    inky.animations.add('flashing', [64, 65, 66, 67], 10, true);
 
     clyde.animations.add('RIGHT', [98, 99], 10, true);
     clyde.animations.add('LEFT', [100, 101], 10, true);
     clyde.animations.add('UP', [102, 103], 10, true);
     clyde.animations.add('DOWN', [104, 105], 10, true);
-    clyde.animations.add('vulnerable', [64, 65], 10, true);
-    clyde.animations.add('flashing', [64, 65, 66, 67], 10, true);
 
     // Add dot animations
     dots.callAll('animations.add', 'animations', 'flashing', [149, 152], 10, true);
     power_pills.callAll('animations.add', 'animations', 'flashing', [150, 153], 10, true);
 
     // Score and lives display
-    scoreText = game.add.text(20, 20, 'Score:', {font: '24px arial', fill: '#fff'});
+    scoreText = game.add.text(40, 10, '1P', {fill: '#ffffff'});
+    scoreText.font = 'Press Start 2P';
+    scoreText.fontSize = '14px';
+
+    scoreDisplay = game.add.text(40, 26, '0', {fill: '#ffffff'});
+    scoreDisplay.font = 'Press Start 2P';
+    scoreDisplay.fontSize = '14px';
+    scoreDisplay.align = 'right';
+
+    livesDisplay = game.add.text(20, 550
+      , 'Lives', {fill: '#fff'});
+    livesDisplay.font = 'Press Start 2P';
+    livesDisplay.fontSize = '14px';
+
+    livesImage = game.add.group();
+    for(var j = 0; j < lives; j++) {
+      // 1st Property Formula: (1st child margin left + margin between + position multiplier);
+      livesImage.create(20 + 4 + (16 * j), 570, 'pacman', 0);
+    }
+
+    livesImage.callAll('animations.add', 'animations', 'flashing', [0, 1, 2, 1], 10, true);
 
     // Add keyboard listeners.
     cursors = game.input.keyboard.createCursorKeys();
@@ -137,68 +110,50 @@ var PacmanGame = {
   },
 
   update: function() {
-    game.physics.arcade.collide(pacman, sharedLayer);
-    game.physics.arcade.collide(blinky, sharedLayer);
-    game.physics.arcade.collide(pinky, sharedLayer);
-    game.physics.arcade.collide(inky, sharedLayer);
-    game.physics.arcade.collide(clyde, sharedLayer);
-    game.physics.arcade.collide(blinky, ghostLayer);
-    game.physics.arcade.collide(pinky, ghostLayer);
-    game.physics.arcade.collide(inky, ghostLayer);
-    game.physics.arcade.collide(clyde, ghostLayer);
-    game.physics.arcade.collide(pacman, pacmanLayer);
-    game.physics.arcade.overlap(pacman, dots, collectDot);
-    game.physics.arcade.overlap(pacman, power_pills, collectPill);
-    game.physics.arcade.collide(pacman, blinky, handleCollision);
-    game.physics.arcade.overlap(pacman, pinky, handleCollision);
-    game.physics.arcade.overlap(pacman, inky, handleCollision);
-    game.physics.arcade.overlap(pacman, clyde, handleCollision);
+    characters = [pacman, blinky, pinky, inky, clyde];
 
     dots.callAll('play', null, 'flashing');
     power_pills.callAll('play', null, 'flashing');
+    livesImage.callAll('play', null, 'flashing');
 
     handleKeyPress();
-    handleOffscreen(pacman);
-    setCurrentDirection(pacman);
-    move(pacman);
-    animate(pacman);
+    checkReleaseGhost();
 
-    setCurrentDirection(blinky);
-    handleOffscreen(blinky);
-    queueGhostMovement(blinky);
-    move(blinky);
-    animate(blinky);
-
-    setCurrentDirection(pinky);
-    handleOffscreen(pinky);
-    queueGhostMovement(pinky);
-    move(pinky);
-    animate(pinky);
-
-    setCurrentDirection(inky);
-    handleOffscreen(inky);
-    queueGhostMovement(inky);
-    move(inky);
-    animate(inky);
-
-    setCurrentDirection(clyde);
-    handleOffscreen(clyde);
-    queueGhostMovement(clyde);
-    move(clyde);
-    animate(clyde);
+    characters.forEach(character => {
+      checkCollisions(character)
+      setCurrentDirection(character);
+      handleOffscreen(character);
+      queueGhostMovement(character);
+      move(character);
+      animate(character);
+    });
 
     if(dots.remaining === 0) {
-      restartTimer = setTimeout(restart, 500);
+      characters.forEach(character => { toggleFreeze(character)});
+      restartTimer = setTimeout(function() {nextStage(characters)}, 3000);
     }
 
-    checkReleaseGhost();
+  // }, render: function() {
+  //   game.debug.body(pacman);
+  //   game.debug.body(blinky);
   }
 };
 
+function checkCollisions(character) {
+  if (character.key === 'pacman') {
+    game.physics.arcade.overlap(pacman, dots, collectDot);
+    game.physics.arcade.overlap(pacman, power_pills, collectPill);
+  } else {
+    game.physics.arcade.collide(character, ghostLayer);
+    game.physics.arcade.collide(pacman, character, handleCollision);
+  }
+  game.physics.arcade.collide(character, dotLayer);
+}
+
 function getDotCoords() {
   var tileCoords = [];
-  for (var i = 0; i < sharedLayer.layer.data.length; i++) {
-    sharedLayer.layer.data[i].forEach(cell => {
+  for (var i = 0; i < dotLayer.layer.data.length; i++) {
+    dotLayer.layer.data[i].forEach(cell => {
       if (cell.index === 224 || cell.index === 155) {
         tileCoords.push([cell.worldX, cell.worldY]);
       }
@@ -221,12 +176,31 @@ function handleKeyPress() {
   }
 
   if (spaceKey.isDown) {
-    console.log('q', blinky.queuedDirection);
-    console.log('c', blinky.currentDirection);
+    console.log(pacman);
   }
 }
 
 function restart() {
   clearTimeout(restartTimer);
-  game.state.restart();
+  pacman.animations.stop('death');
+  pacman.body.enable = true;
+  pacman.body.moves = true;
+  pacman.frame = 0;
+  pacman.reset(216, 320);
+  blinky.reset(176, 288);
+  pinky.reset(192, 288);
+  inky.reset(208, 288);
+  clyde.reset(224, 288);
+  ghostsInPlay = 0;
+}
+
+function nextStage(characters) {
+  ghostsInPlay  = 0;
+  game.state.restart('play');
+}
+
+
+function addScore(amount) {
+  score += amount;
+  scoreDisplay.text = score.toString();
 }

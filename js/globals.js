@@ -1,13 +1,22 @@
-var pacman, blinky, pinky, inky, clyde, dots, power_pills;
-var score = 0;
-var scoreText;
-var lives = 3;
-var livesDisplay;
-var cursors, spaceKey;
-var ghostsInPlay = 0;
-
-var vulnerableTimer, restartTimer, releaseTimer;
-
-var SPEED = 100;
-//  Used in storing game assets.
+// Initialize map objects
 var map, sharedLayer, pacmanLayer, ghostLayer, ghostTurns;
+
+// Initialize on-screen objects
+var pacman, blinky, pinky, inky, clyde, dots, power_pills;
+var characters;
+
+// Initialize text-based displays
+var scoreText, highScore, livesDisplay;
+
+// Initialize event listener objects
+var cursors, spaceKey;
+
+// Initialize timers used throughout
+var vulnerableTimer, restartTimer, releaseTimer, buffer;
+
+//Initialize game wide variables
+var SPEED = 100;
+var lives = 3;
+var score = 0;
+var ghostsInPlay = 0;
+var highScore;
