@@ -9,7 +9,7 @@ var menuState = {
 
     menuTimer = setInterval(function() {flashTitle(startMessage);}, 1000);
 
-    var spacebar = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
+    spacebar = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
 
     spacebar.onDown.addOnce(this.start, this);
   },
@@ -26,40 +26,36 @@ var tutorialState = {
 
     var pressNext = game.input.keyboard.addKey(Phaser.Keyboard.ENTER);
 
-    pressEnter = game.add.text(92, 360, 'Press enter to skip', {fill: '#ffffff'});
+    pressEnter = game.add.text(120, 420, 'Press enter to skip', {fill: '#ffffff'});
     pressEnter.font = 'Press Start 2P';
     pressEnter.fontSize = '12px';
 
-    // TODO: ANIMATION FOR tutorial
-      // SCENE 1
-      // SHOW ARROW keys lighting up
-      // PACMAN MOVING AROUND SCREEN IN UNISON
-      // MESSAGE: ARROW KEYS MOVE PACMAN
+    menuTimer = setInterval(function() {flashTitle(pressEnter);}, 1000);
 
-      // SCENE 2
-      // PACMAN EATING TRAIL OF DOTS
-      // MESSAGE: EAT DOTS TO SCORE POINTS
-
-      // SCENE 3
-      // GHOSTS CHASE Pacman
-      // MESSAGE: DON'T GET TOUCHED BY THE ghosts
-
-      // SCENE 4
-      // PACMAN GETS BIG DOT AND CHASES THE GHOSTS
-      // MESSAGE: TURN THE TABLES AND GET PAYBACK
-
-      // END tutorial
-      // START GAME
-      tutorialImages = game.add.image()
+    tutorial = game.add.image(0, 75, 'tutorial1');
+    tutorialTimer = setTimeout(function() {nextTutorial(tutorial.key)}, 5000);
 
     pressNext.onDown.addOnce(this.play, this);
   },
 
   play: function() {
+    clearTimeout(tutorialTimer);
     game.state.start('play')
   }
 }
 
 function flashTitle(text) {
   text.visible ? text.visible = false : text.visible = true;
+}
+
+function nextTutorial(key) {
+  clearTimeout(tutorialTimer);
+  var nextNum = parseInt(key.slice(-1), 10) + 1;
+  if (nextNum > 4) {
+    tutorialState.play();
+    return;
+  }
+  var nextString = key.slice(0, -1) + nextNum
+  tutorial.loadTexture(nextString);
+  tutorialTimer = setTimeout(function() {nextTutorial(nextString)}, 5000);
 }

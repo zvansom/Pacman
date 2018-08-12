@@ -1,3 +1,30 @@
-.hidden {
-  display: none !important;
+body {
+  background: #f9e209;
+  height: 100%;
+
+}
+
+.container {
+  width: 80%;
+  height: 100vh;
+  position: relative;
+  background: rgb(12, 13, 12);
+  margin: 0 auto;
+}
+
+@media (max-width: 600px) {
+  .container {
+    display: none;
+  }
+}
+
+canvas {
+  margin: auto;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  border: 2px rgba(83, 83, 83, 0.72) solid;
+  border-radius: 5px 5px 5px 5px;
 }

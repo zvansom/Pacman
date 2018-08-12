@@ -16,6 +16,11 @@ var loadState = {
     loadingText.font = 'Press Start 2P';
     loadingText.fontSize = '14px';
 
+    game.load.image('tutorial1', './assets/tuts1.png');
+    game.load.image('tutorial2', './assets/tuts2.png');
+    game.load.image('tutorial3', './assets/tuts3.png');
+    game.load.image('tutorial4', './assets/tuts4.png');
+
     game.load.image('title', './assets/pacman_title.png');
 
     game.load.tilemap('map', './assets/pacman_tile_map.json', null, Phaser.Tilemap.TILED_JSON);

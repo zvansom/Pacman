@@ -7,9 +7,7 @@ var PacmanGame = {
     dotLayer = map.createLayer('Dot Layer');
     charLayer = map.createLayer('Character Layer');
 
-    // TODO: UPDATE EXLUSION LIST TO BE CHARACTER SPECIFIC
     // Add collision to all tiles with 'index' !== 0
-    // map.setCollisionByExclusion('224', true, charLayer);
     map.setCollisionByExclusion('224', true, dotLayer);
     map.setCollisionByExclusion('224', true, charLayer);
 
@@ -44,7 +42,6 @@ var PacmanGame = {
     clyde.frame = 98;
 
     characters = [pacman, blinky, pinky, inky, clyde];
-
     characters.forEach(character => {initProps(character)});
 
     // ----- ANIMATIONS -----
@@ -111,10 +108,9 @@ var PacmanGame = {
 
   update: function() {
     characters = [pacman, blinky, pinky, inky, clyde];
+    animateItems = [dots, power_pills, livesImage];
 
-    dots.callAll('play', null, 'flashing');
-    power_pills.callAll('play', null, 'flashing');
-    livesImage.callAll('play', null, 'flashing');
+    animateItems.forEach(item => {item.callAll('play', null, 'flashing')});
 
     handleKeyPress();
     checkReleaseGhost();
@@ -132,17 +128,13 @@ var PacmanGame = {
       characters.forEach(character => { toggleFreeze(character)});
       restartTimer = setTimeout(function() {nextStage(characters)}, 3000);
     }
-
-  // }, render: function() {
-  //   game.debug.body(pacman);
-  //   game.debug.body(blinky);
   }
 };
 
 function checkCollisions(character) {
   if (character.key === 'pacman') {
-    game.physics.arcade.overlap(pacman, dots, collectDot);
-    game.physics.arcade.overlap(pacman, power_pills, collectPill);
+    game.physics.arcade.overlap(character, dots, collectDot);
+    game.physics.arcade.overlap(character, power_pills, collectPill);
   } else {
     game.physics.arcade.collide(character, ghostLayer);
     game.physics.arcade.collide(pacman, character, handleCollision);
@@ -176,7 +168,8 @@ function handleKeyPress() {
   }
 
   if (spaceKey.isDown) {
-    console.log(pacman);
+    console.log('pacman', pacman.currentDirection);
+    console.log('blinky', blinky.currentDirection);
   }
 }
 
