@@ -32,13 +32,6 @@ var tutorialState = {
 
     // TODO: ANIMATION FOR tutorial
       // SCENE 1
-
-      tutsBg = game.add.graphics(0, 100);
-      tutsBg.beginFill(0x000000);
-      tutsBg.lineTo(450, 100);
-      tutsBg.lineTo(450, 400);
-      tusBg.lineTo(0, 400);
-      tutsBg.endFill();
       // SHOW ARROW keys lighting up
       // PACMAN MOVING AROUND SCREEN IN UNISON
       // MESSAGE: ARROW KEYS MOVE PACMAN
@@ -57,6 +50,7 @@ var tutorialState = {
 
       // END tutorial
       // START GAME
+      tutorialImages = game.add.image()
 
     pressNext.onDown.addOnce(this.play, this);
   },
