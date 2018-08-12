@@ -157,15 +157,15 @@ function getDotCoords() {
 
 function handleKeyPress() {
   if (cursors.left.isDown) {
-    pinky.queuedDirection = 'LEFT';
+    pacman.queuedDirection = 'LEFT';
   } else if (cursors.right.isDown) {
-    pinky.queuedDirection = 'RIGHT';
+    pacman.queuedDirection = 'RIGHT';
   }
 
   if (cursors.up.isDown) {
-    pinky.queuedDirection = 'UP';
+    pacman.queuedDirection = 'UP';
   } else if (cursors.down.isDown) {
-    pinky.queuedDirection = 'DOWN';
+    pacman.queuedDirection = 'DOWN';
   }
 
   if (spaceKey.isDown) {

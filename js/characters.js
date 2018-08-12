@@ -92,11 +92,11 @@ function animate(character) {
 
 function handleOffscreen(character) {
   if(character.body.x < 0) {
-    character.reset(450, 272);
+    character.reset(449, 272);
     character.body.velocity.x = -SPEED;
   }
   if(character.body.x > 450) {
-    character.reset(0, 272);
+    character.reset(1, 272);
     character.body.velocity.x = SPEED;
   }
 }
