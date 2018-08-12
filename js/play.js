@@ -108,10 +108,9 @@ var PacmanGame = {
 
   update: function() {
     characters = [pacman, blinky, pinky, inky, clyde];
+    animateItems = [dots, power_pills, livesImage];
 
-    dots.callAll('play', null, 'flashing');
-    power_pills.callAll('play', null, 'flashing');
-    livesImage.callAll('play', null, 'flashing');
+    animateItems.forEach(item => {item.callAll('play', null, 'flashing')});
 
     handleKeyPress();
     checkReleaseGhost();
