@@ -102,7 +102,6 @@ function handleOffscreen(character) {
 }
 
 function handleCollision(pacman, ghost) {
-  console.log('hit');
   if (ghost.vulnerable === true) {
     ghost.body.enable = false;
     addScore(100);
