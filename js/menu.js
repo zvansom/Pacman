@@ -1,5 +1,7 @@
 var menuState = {
   create: function() {
+    openingSong = game.add.audio('openingSong');
+    openingSong.play();
     bgImg = game.add.image(0, 0, 'bg');
 
     title = game.add.image(25, 75, 'title');

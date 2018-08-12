@@ -38,6 +38,11 @@ var loadState = {
     // Load dot
     game.load.spritesheet('dot', './assets/images/spritesheet.png', 16, 16);
     game.load.spritesheet('pill', './assets/images/spritesheet.png', 16, 16);
+
+    game.load.audio('chompSound', '../assets/audio/pacman_chomp.mp3');
+    game.load.audio('deathSound', '../assets/audio/pacman_death.mp3');
+    game.load.audio('openingSong', '../assets/audio/pacman_beginning.mp3');
+    game.load.audio('eatGhost', '../assets/audio/pacman_eatghost.mp3');
   },
 
   create: function() {
