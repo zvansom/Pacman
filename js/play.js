@@ -7,9 +7,7 @@ var PacmanGame = {
     dotLayer = map.createLayer('Dot Layer');
     charLayer = map.createLayer('Character Layer');
 
-    // TODO: UPDATE EXLUSION LIST TO BE CHARACTER SPECIFIC
     // Add collision to all tiles with 'index' !== 0
-    // map.setCollisionByExclusion('224', true, charLayer);
     map.setCollisionByExclusion('224', true, dotLayer);
     map.setCollisionByExclusion('224', true, charLayer);
 
@@ -44,7 +42,6 @@ var PacmanGame = {
     clyde.frame = 98;
 
     characters = [pacman, blinky, pinky, inky, clyde];
-
     characters.forEach(character => {initProps(character)});
 
     // ----- ANIMATIONS -----
@@ -132,17 +129,13 @@ var PacmanGame = {
       characters.forEach(character => { toggleFreeze(character)});
       restartTimer = setTimeout(function() {nextStage(characters)}, 3000);
     }
-
-  // }, render: function() {
-  //   game.debug.body(pacman);
-  //   game.debug.body(blinky);
   }
 };
 
 function checkCollisions(character) {
   if (character.key === 'pacman') {
-    game.physics.arcade.overlap(pacman, dots, collectDot);
-    game.physics.arcade.overlap(pacman, power_pills, collectPill);
+    game.physics.arcade.overlap(character, dots, collectDot);
+    game.physics.arcade.overlap(character, power_pills, collectPill);
   } else {
     game.physics.arcade.collide(character, ghostLayer);
     game.physics.arcade.collide(pacman, character, handleCollision);
@@ -164,19 +157,20 @@ function getDotCoords() {
 
 function handleKeyPress() {
   if (cursors.left.isDown) {
-    pacman.queuedDirection = 'LEFT';
+    pinky.queuedDirection = 'LEFT';
   } else if (cursors.right.isDown) {
-    pacman.queuedDirection = 'RIGHT';
+    pinky.queuedDirection = 'RIGHT';
   }
 
   if (cursors.up.isDown) {
-    pacman.queuedDirection = 'UP';
+    pinky.queuedDirection = 'UP';
   } else if (cursors.down.isDown) {
-    pacman.queuedDirection = 'DOWN';
+    pinky.queuedDirection = 'DOWN';
   }
 
   if (spaceKey.isDown) {
-    console.log(pacman);
+    console.log('pacman', pacman.currentDirection);
+    console.log('blinky', blinky.currentDirection);
   }
 }
 

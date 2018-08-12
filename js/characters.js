@@ -102,11 +102,13 @@ function handleOffscreen(character) {
 }
 
 function handleCollision(pacman, ghost) {
+  console.log('hit');
   if (ghost.vulnerable === true) {
     ghost.body.enable = false;
     addScore(100);
     ghost.kill();
     ghostsInPlay--;
+
     buffer = setTimeout(function() {resetGhost(ghost)}, 1000);
   } else {
     pacman.currentDirection = '';
