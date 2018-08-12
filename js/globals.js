@@ -12,7 +12,7 @@ var scoreText, highScore, livesDisplay;
 var cursors, spaceKey;
 
 // Initialize timers used throughout
-var vulnerableTimer, restartTimer, releaseTimer;
+var vulnerableTimer, restartTimer, releaseTimer, buffer;
 
 //Initialize game wide variables
 var SPEED = 100;

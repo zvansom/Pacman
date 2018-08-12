@@ -12,8 +12,9 @@ var bootState = {
 
 var loadState = {
   preload: function() {
-    loadingText = game.add.text(80, 72, 'Loading...', {font: '30px Arial', fill: '#ffffff'});
+    loadingText = game.add.text(175, 280, 'Loading...', {fill: '#ffffff'});
     loadingText.font = 'Press Start 2P';
+    loadingText.fontSize = '14px';
 
     game.load.image('title', './assets/pacman_title.png');
 
