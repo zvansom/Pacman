@@ -30,11 +30,11 @@ function queueGhostMovement(ghost) {
 
     }
     // Don't let the ghosts stand still.
-    else if (ghost.queudDirection === '' && ghost.currentDirection === 'STOPPED') {
+    else if (ghost.queuedDirection === '' && ghost.currentDirection === 'STOPPED') {
       if (Math.random() > 0.5) {
-        ghost.queudDirection = 'DOWN';
+        ghost.queuedDirection = 'DOWN';
       } else {
-        ghost.queudDirection = 'UP';
+        ghost.queuedDirection = 'UP';
       }
     } else if (ghost.currentDirection === 'STOPPED') {
       if (ghost.queuedDirection === 'LEFT' && ghost.body.blocked.left === true) {
